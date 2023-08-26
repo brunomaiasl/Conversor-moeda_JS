@@ -1,21 +1,25 @@
 
 const convertButton = document.querySelector(".convert-button")
 const currencySelect = document.querySelector(".currency-select")
-const currencyFirstSelect = document.querySelector(".currency-first-select")
 
 
-
-function convertValues() {
+const convertValues = async () => {
     const inputCurrencyValue = document.querySelector(".input-currency").value
     const currencyValueToConvert = document.querySelector(".currency-value-to-convert") //Valor em real
     const currencyValueConverted = document.querySelector(".currency-value") //Outras moedas
 
+    //Consumindo API para buscar valores de cambio atualizados
+    const data = await fetch('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL,BTC-BRL,GBP-BRL').then(response => response.json())
 
-    const dolarToday = 4.8
-    const euroToday = 6.2
-    const libraToday = 6.1
-    const bitcoinToday = 126464.6
+    const dolarToday = data.USDBRL.high
+    const euroToday = data.EURBRL.high
+    const libraToday = data.GBPBRL.high
+    const bitcoinToday = data.BTCBRL.high
 
+    currencyValueToConvert.innerHTML = new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+    }).format(inputCurrencyValue)
 
 
     if (currencySelect.value == "dolar") {
@@ -55,7 +59,8 @@ function convertValues() {
 function changeCurrency() {
     const currencyName = document.getElementById("currency-name")
     const currencyImage = document.querySelector(".currency-img")
-  
+
+
     if (currencySelect.value == "dolar") {
         currencyName.innerHTML = "Dolar"
         currencyImage.src = "./assets/dolar.png"
@@ -84,21 +89,5 @@ currencySelect.addEventListener("change", changeCurrency)
 convertButton.addEventListener("click", convertValues)
 
 
-/*const request = require('request')
-const moedas = inputCurrencyValue
 
-
-const options = {
-    url:`https://economia.awesomeapi.com.br/last/${moedas}`,
-    method:'GET',
-    headers: {
-        'Accept': 'application/json',
-        'Accept-Charset': 'utf-8'
-    }
-}
-
-const callback_dolar = function(erro, res, body){
-    let json = JSON.parse(body)
-    cotacao = json.USBRL['bid']
-}*/
 
